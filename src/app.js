@@ -25,7 +25,16 @@ app.get('/teams/:id', (req, res) => { // Endpoint do tipo GET com a rota /teams/
     }
 });
 
-app.post('/teams', (req, res) => {
+const validateTeam = (req, res, next) => {
+    const requiredProperties = ['nome', 'sigla'];
+    if (requiredProperties.every((property) => property in req.body)) {
+      next(); // Chama o próximo middleware
+    } else {
+      res.sendStatus(400); // Ou já responde avisando que deu errado
+    }
+  };
+
+app.post('/teams', validateTeam, (req, res) => {
     const requiredProperties = ['nome', 'sigla'];
     if (requiredProperties.every((property) => property in req.body)) {
         const team = { id: nextId, ...req.body };
@@ -37,7 +46,7 @@ app.post('/teams', (req, res) => {
     }
 });
 
-app.put('/teams/:id', (req, res) => {
+app.put('/teams/:id', validateTeam, (req, res) => {
     const id = Number(req.params.id);
     const requiredProperties = ['nome', 'sigla'];
     const team = teams.find((t) => t.id === id);
@@ -51,7 +60,7 @@ app.put('/teams/:id', (req, res) => {
     }
 });
 
-app.delete('/teams/:id', (req, res) => {
+app.delete('/teams/:id', validateTeam, (req, res) => {
     const id = Number(req.params.id);
     const team = teams.find((t) => t.id === id);
     if (team) {
