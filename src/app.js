@@ -3,11 +3,14 @@ const express = require('express');
 
 const app = express();
 
+const apiCredentials = require('./middlewares/apiCredentials'); // middleware assíncrono
+
 const teams = [
     { id: 1, nome: 'São Paulo Futebol Clube', sigla: 'SPF' },
     { id: 2, nome: 'Sociedade Esportiva Palmeiras', sigla: 'PAL' },
 ];
 
+app.use(apiCredentials); // afeta as rotas que vem abaixo da sua definição
 app.use(express.json());
 
 // Arquitetura REST
